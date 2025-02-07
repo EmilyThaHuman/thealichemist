@@ -10,7 +10,7 @@ export default function HomePage() {
           <h1 className="text-8xl sm:text-9xl md:text-[12rem] font-bold leading-none tracking-tighter text-zinc-900">
             <span className="block">THE</span>
             <span className="block">ALICH-</span>
-            <span className="block">EMISTS</span>
+            <span className="block">EMIST</span>
           </h1>
           <p className="mt-12 text-base sm:text-lg tracking-widest">
             <span className="text-red-600">WEBSITE</span>{" "}

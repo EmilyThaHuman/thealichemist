@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
         element: <ProjectsPage />,
       },
       {
-        path: "project/:id",
+        path: "projects/:id",
         element: <ProjectDetail />,
       },
       {
