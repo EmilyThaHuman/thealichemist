@@ -1,53 +1,26 @@
-import { NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const HomePage = ({
-  navLinks = [
-    { href: "#", text: "OUR WORK" },
-    { href: "#", text: "ABOUT US" },
-    { href: "#", text: "PRESS & AWARDS" },
-    { href: "#", text: "CONTACT" },
-  ],
-}) => {
+export default function HomePage() {
   return (
-    <div className="relative min-h-screen bg-white text-black overflow-hidden">
-      <nav className="absolute top-0 right-0 mt-8 mr-8 z-10">
-        <ul className="flex space-x-8">
-          {navLinks.map((link, index) => (
-            <NavLink key={index} href={link.href}>
-              {link.text}
-            </NavLink>
-          ))}
-        </ul>
-      </nav>
-
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="-mt-24 -ml-32" style={{ transform: "scale(1.5)" }}>
-          <h1
-            style={{
-              fontSize: "11.25vw",
-              fontWeight: "bold",
-              lineHeight: "0.85",
-              letterSpacing: "-0.02em",
-              whiteSpace: "nowrap",
-            }}
-          >
-            THE
-            <br />
-            <span style={{ display: "block" }}>ALICH-</span>
-            <span style={{ display: "block" }}>EMISTS</span>
+    <div className="relative min-h-screen w-full overflow-hidden bg-white">
+      {/* Main content container */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Text container with proper positioning */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 p-8">
+          <h1 className="text-8xl sm:text-9xl md:text-[12rem] font-bold leading-none tracking-tighter text-zinc-900">
+            <span className="block">THE</span>
+            <span className="block">ALICH-</span>
+            <span className="block">EMISTS</span>
           </h1>
-          <p
-            className="mt-8"
-            style={{ fontSize: "0.7rem", letterSpacing: "0.1em" }}
-          >
-            <span className="text-red-600">WEBSITE</span> / JOBSITE
+          <p className="mt-12 text-base sm:text-lg tracking-widest">
+            <span className="text-red-600">WEBSITE</span>{" "}
+            <span className="text-zinc-600">/ JOBSITE</span>
           </p>
         </div>
       </div>
     </div>
   );
-};
+}
 
 HomePage.propTypes = {
   navLinks: PropTypes.arrayOf(
@@ -58,4 +31,4 @@ HomePage.propTypes = {
   ),
 };
 
-export default HomePage;
+HomePage.displayName = "HomePage";

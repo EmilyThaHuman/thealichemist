@@ -16,7 +16,16 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: (
+          <HomePage
+            navLinks={[
+              { href: "/projects", text: "OUR WORK" },
+              { href: "/about", text: "ABOUT US" },
+              { href: "/press", text: "PRESS & AWARDS" },
+              { href: "/contact", text: "CONTACT" },
+            ]}
+          />
+        ),
       },
       {
         path: "projects",
@@ -40,4 +49,4 @@ export const router = createBrowserRouter([
       },
     ],
   },
-]); 
+]);

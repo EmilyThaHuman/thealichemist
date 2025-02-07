@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 800">
+  <style>
+    @font-face {
+      font-family: 'CustomFont';
+      src: local('Arial Black'), local('Arial-Black');
+    }
+    text {
+      font-family: 'CustomFont', sans-serif;
+      font-weight: 900;
+      fill: black;
+    }
+  </style>
+  
+  <text x="100" y="250" font-size="200">THE</text>
+  <text x="100" y="450" font-size="200">ALICH-</text>
+  <text x="100" y="650" font-size="200">EMIST</text>
+</svg>

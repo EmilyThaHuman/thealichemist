@@ -5,9 +5,131 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Alich-Emists</title>
+
+    <!-- Enhanced Loading Style -->
+    <style>
+      /* Base Styles */
+      :root {
+        color-scheme: light dark;
+      }
+
+      html {
+        overflow-y: scroll; /* Prevent layout shift */
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Loading States */
+      .loading {
+        background: #ffffff;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .loading {
+          background: #1a1a1a;
+        }
+      }
+
+      .js-loading {
+        opacity: 0;
+        transition: opacity 0.3s ease-in;
+      }
+
+      .js-loading-complete {
+        opacity: 1;
+      }
+
+      /* Loading Spinner */
+      .initial-loader {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border-top-color: #646cff;
+        animation: spin 1s ease-in-out infinite;
+        display: none;
+      }
+
+      .loading .initial-loader {
+        display: block;
+      }
+
+      @keyframes spin {
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .js-loading {
+          transition: none;
+        }
+        .initial-loader {
+          animation: none;
+        }
+      }
+
+      /* Print Styles */
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <!-- Main Application -->
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Loading State Management -->
+    <script>
+      (() => {
+        // Performance monitoring
+        window.performance.mark("app-init");
+
+        // Remove loading class with delay for smoother transition
+        const removeLoading = () => {
+          requestAnimationFrame(() => {
+            document.documentElement.classList.remove("loading");
+            const root = document.getElementById("root");
+            root.classList.add("js-loading-complete");
+
+            // Performance monitoring
+            window.performance.mark("app-ready");
+            window.performance.measure(
+              "app-load-time",
+              "app-init",
+              "app-ready",
+            );
+          });
+        };
+
+        // Handle loading states
+        if (document.readyState === "complete") {
+          removeLoading();
+        } else {
+          window.addEventListener("load", removeLoading);
+        }
+
+        // Error handling
+        window.addEventListener("error", (event) => {
+          console.error("Application error:", event.error);
+          // You could add error reporting here
+        });
+
+        // Remove loader after timeout (failsafe)
+        setTimeout(removeLoading, 5000);
+      })();
+    </script>
   </body>
 </html>
