@@ -2,11 +2,21 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { projects } from "@/components/ProjectGrid";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  buenosAiresImages,
+  fishingLodgeImages,
+  chateauMarmotImages,
+  studioImages,
+  seattleHouseImages,
+  casaMalibuImages,
+  sandCastleImages
+} from "@/utils/projectImages";
 
 const ProjectDetail = () => {
   const { id } = useParams();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [imageError, setImageError] = useState(false);
 
   const project = projects.find((p) => p.id === id);
 
@@ -14,16 +24,34 @@ const ProjectDetail = () => {
     return <div>Project not found</div>;
   }
 
-  const projectImages = [
-    project.image,
-    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
-    "https://images.unsplash.com/photo-1600607687644-c7171b42498a",
-    "https://images.unsplash.com/photo-1600607687920-4e2a09cf159e",
-    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
-    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9",
-    "https://images.unsplash.com/photo-1600607688969-a5bfcd646154",
-    "https://images.unsplash.com/photo-1600607688960-761c0c6b3c1d",
-  ];
+  const getProjectImages = (projectId) => {
+    switch (projectId) {
+      case "buenos-aires":
+        return buenosAiresImages;
+      case "fishing-lodge":
+        return fishingLodgeImages;
+      case "ali-wood":
+        return [
+          project.image,
+          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+          "https://images.unsplash.com/photo-1600607687644-c7171b42498a",
+        ];
+      case "chateau-marmot":
+        return chateauMarmotImages;
+      case "studio":
+        return studioImages;
+      case "seattle-house":
+        return seattleHouseImages;
+      case "casa-malibu":
+        return casaMalibuImages;
+      case "sand-castle":
+        return sandCastleImages;
+      default:
+        return [project.image];
+    }
+  };
+
+  const projectImages = getProjectImages(id);
 
   const getCurrentPair = () => {
     return [
@@ -126,7 +154,16 @@ const ProjectDetail = () => {
                         src={image}
                         alt={`${project.title} ${currentIndex + index + 1}`}
                         className="w-full h-full object-contain"
+                        onError={(e) => {
+                          console.error(`Failed to load image: ${image}`);
+                          setImageError(true);
+                        }}
                       />
+                      {imageError && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+                          <p>Image failed to load: {image}</p>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

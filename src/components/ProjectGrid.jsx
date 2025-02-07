@@ -1,12 +1,25 @@
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import {
+  buenosAiresImages,
+  fishingLodgeImages,
+  chateauMarmotImages,
+  studioImages,
+  seattleHouseImages,
+  casaMalibuImages,
+  sandCastleImages
+} from "@/utils/projectImages";
+
+const getFirstImage = (images) => {
+  return images && images.length > 0 ? images[0] : null;
+};
 
 const projects = [
   {
     id: "buenos-aires",
     title: "BUENOS AIRES,",
     location: "ARGENTINA",
-    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
+    image: getFirstImage(buenosAiresImages),
     description: "Modern urban residence with traditional influences",
     year: "2023",
   },
@@ -14,7 +27,7 @@ const projects = [
     id: "fishing-lodge",
     title: "FISHING LODGE,",
     location: "MONTANA",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+    image: getFirstImage(fishingLodgeImages),
     description: "Rustic luxury retreat",
     year: "2022",
   },
@@ -30,7 +43,7 @@ const projects = [
     id: "chateau-marmot",
     title: "CHATEAU MARMOT,",
     location: "FRANCE",
-    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
+    image: getFirstImage(chateauMarmotImages),
     description: "Historic chateau renovation",
     year: "2022",
   },
@@ -38,7 +51,7 @@ const projects = [
     id: "studio",
     title: "STUDIO,",
     location: "NEW YORK",
-    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
+    image: getFirstImage(studioImages),
     description: "Urban artist loft conversion",
     year: "2023",
   },
@@ -46,7 +59,7 @@ const projects = [
     id: "seattle-house",
     title: "SEATTLE HOUSE,",
     location: "WASHINGTON",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+    image: getFirstImage(seattleHouseImages),
     description: "Pacific Northwest modern home",
     year: "2023",
   },
@@ -54,7 +67,7 @@ const projects = [
     id: "casa-malibu",
     title: "CASA MALIBU,",
     location: "CALIFORNIA",
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9",
+    image: getFirstImage(casaMalibuImages),
     description: "Oceanfront contemporary villa",
     year: "2022",
   },
@@ -62,7 +75,7 @@ const projects = [
     id: "sand-castle",
     title: "THE SAND CASTLE,",
     location: "HAMPTONS",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+    image: getFirstImage(sandCastleImages),
     description: "Beachfront modern estate",
     year: "2023",
   },

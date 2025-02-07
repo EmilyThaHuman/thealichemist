@@ -22,4 +22,16 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
   },
+  assetsInclude: /\.(jpg|JPG|jpeg|png|gif|mp4|svg|ico|webp)$/,
+  optimizeDeps: {
+    exclude: ['*.JPG', '*.jpg']
+  },
+  // Add this section to handle static assets
+  publicDir: 'public',
+  server: {
+    fs: {
+      // Allow serving files from one level up to the project root
+      allow: ['..']
+    }
+  }
 });
