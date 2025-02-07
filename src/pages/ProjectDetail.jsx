@@ -28,7 +28,7 @@ const ProjectDetail = () => {
   const getCurrentPair = () => {
     return [
       projectImages[currentIndex],
-      projectImages[currentIndex + 1],
+      projectImages[(currentIndex + 1) % projectImages.length],
     ].filter(Boolean);
   };
 
@@ -36,24 +36,24 @@ const ProjectDetail = () => {
 
   const goToNext = () => {
     setDirection(1);
-    setCurrentIndex(prev => {
-      if (prev >= projectImages.length - 1) return 0;
-      if (prev === projectImages.length - 2) return projectImages.length - 1;
-      return prev + 1;
-    });
+    setCurrentIndex(prev => (prev + 1) % projectImages.length);
   };
 
   const goToPrevious = () => {
     setDirection(-1);
-    setCurrentIndex(prev => {
-      if (prev === 0) return projectImages.length - 1;
-      return prev - 1;
-    });
+    setCurrentIndex(prev => 
+      prev === 0 ? projectImages.length - 1 : prev - 1
+    );
+  };
+
+  const handleThumbnailClick = (index) => {
+    setDirection(index > currentIndex ? 1 : -1);
+    setCurrentIndex(index);
   };
 
   const slideVariants = {
     enter: (direction) => ({
-      x: direction > 0 ? 1000 : -1000,
+      x: direction > 0 ? 500 : -500,
       opacity: 0
     }),
     center: {
@@ -63,7 +63,7 @@ const ProjectDetail = () => {
     },
     exit: (direction) => ({
       zIndex: 0,
-      x: direction < 0 ? 1000 : -1000,
+      x: direction < 0 ? 500 : -500,
       opacity: 0
     })
   };
@@ -103,16 +103,33 @@ const ProjectDetail = () => {
                 animate="center"
                 exit="exit"
                 transition={{
-                  x: { type: "spring", stiffness: 300, damping: 30 },
-                  opacity: { duration: 0.2 }
+                  x: { 
+                    type: "spring", 
+                    stiffness: 300,
+                    damping: 30,
+                    mass: 1,
+                    restDelta: 0.01,
+                    restSpeed: 0.01,
+                    velocity: 0
+                  },
+                  opacity: { 
+                    duration: 0.2,
+                    ease: [0.4, 0, 0.2, 1]
+                  }
                 }}
                 className="absolute inset-0 flex items-center justify-center"
               >
-                <img
-                  src={projectImages[currentIndex]}
-                  alt={`${project.title} ${currentIndex + 1}`}
-                  className="w-full h-full object-contain"
-                />
+                <div className="grid grid-cols-2 gap-4 w-full h-full px-4">
+                  {currentPair.map((image, index) => (
+                    <div key={index} className="relative h-full">
+                      <img
+                        src={image}
+                        alt={`${project.title} ${currentIndex + index + 1}`}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  ))}
+                </div>
               </motion.div>
             </AnimatePresence>
 
@@ -163,12 +180,9 @@ const ProjectDetail = () => {
               {projectImages.map((image, index) => (
                 <button
                   key={index}
-                  onClick={() => {
-                    setDirection(index > currentIndex ? 1 : -1);
-                    setCurrentIndex(index);
-                  }}
+                  onClick={() => handleThumbnailClick(index)}
                   className={`relative flex-shrink-0 w-20 h-20 overflow-hidden rounded-sm transition-all duration-300 ${
-                    index === currentIndex 
+                    index === currentIndex || index === Math.floor(currentIndex / 2) * 2 + 1
                       ? 'ring-2 ring-white' 
                       : 'opacity-50 hover:opacity-75'
                   }`}
