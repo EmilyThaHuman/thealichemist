@@ -73,14 +73,14 @@ const ProjectDetail = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="bg-background"
+      className="bg-background pt-4"
     >
       <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto py-8">
-          <h1 className="text-2xl font-medium">
+        <div className="max-w-3xl mx-auto pb-4">
+          <h1 className="text-2xl font-medium mb-1">
             {project.title}
           </h1>
-          <div className="mt-2 space-y-4">
+          <div className="space-y-1">
             <p className="text-lg text-muted-foreground">
               {project.year}
             </p>
@@ -91,7 +91,7 @@ const ProjectDetail = () => {
         </div>
       </div>
 
-      <div className="flex justify-center w-full overflow-hidden">
+      <div className="flex justify-center w-full overflow-hidden mb-4">
         <div className="relative w-[75%] group">
           <div className="aspect-[16/9] w-full relative bg-background">
             <AnimatePresence initial={false} custom={direction}>
@@ -174,45 +174,23 @@ const ProjectDetail = () => {
               </button>
             </div>
           </div>
-
-          <div className="absolute -bottom-16 left-0 right-0 flex justify-center px-4">
-            <div className="flex gap-2 overflow-x-auto pb-4 max-w-full">
-              {projectImages.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleThumbnailClick(index)}
-                  className={`relative flex-shrink-0 w-20 h-20 overflow-hidden rounded-sm transition-all duration-300 ${
-                    index === currentIndex || index === Math.floor(currentIndex / 2) * 2 + 1
-                      ? 'ring-2 ring-white' 
-                      : 'opacity-50 hover:opacity-75'
-                  }`}
-                >
-                  <img
-                    src={image}
-                    alt={`Thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 mt-24">
-        <div className="max-w-3xl mx-auto py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="container mx-auto px-4">
+        <div className="max-w-3xl mx-auto py-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h2 className="text-lg font-medium mb-4">Project Details</h2>
-              <dl className="space-y-2">
+              <h2 className="text-lg font-medium mb-2">Project Details</h2>
+              <dl className="space-y-1">
                 <dt className="text-muted-foreground">Location</dt>
                 <dd className="font-medium">{project.location}</dd>
-                <dt className="text-muted-foreground mt-4">Year</dt>
+                <dt className="text-muted-foreground mt-2">Year</dt>
                 <dd className="font-medium">{project.year}</dd>
               </dl>
             </div>
             <div>
-              <h2 className="text-lg font-medium mb-4">Description</h2>
+              <h2 className="text-lg font-medium mb-2">Description</h2>
               <p className="text-muted-foreground">{project.description}</p>
             </div>
           </div>
