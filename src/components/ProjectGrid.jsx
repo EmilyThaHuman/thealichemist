@@ -14,7 +14,7 @@ const projects = [
     id: "fishing-lodge",
     title: "FISHING LODGE,",
     location: "MONTANA",
-    image: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
     description: "Rustic luxury retreat",
     year: "2022",
   },
@@ -22,7 +22,7 @@ const projects = [
     id: "ali-wood",
     title: "ALI WOOD,",
     location: "CALIFORNIA",
-    image: "https://images.unsplash.com/photo-1600607688969-a5bfcd646154",
+    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9",
     description: "Contemporary woodland estate",
     year: "2023",
   },
@@ -30,7 +30,7 @@ const projects = [
     id: "chateau-marmot",
     title: "CHATEAU MARMOT,",
     location: "FRANCE",
-    image: "https://images.unsplash.com/photo-1600607688960-761c0c6b3c1d",
+    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
     description: "Historic chateau renovation",
     year: "2022",
   },
@@ -38,7 +38,7 @@ const projects = [
     id: "studio",
     title: "STUDIO,",
     location: "NEW YORK",
-    image: "https://images.unsplash.com/photo-1600607688939-a5bfcd646154",
+    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
     description: "Urban artist loft conversion",
     year: "2023",
   },
@@ -101,12 +101,14 @@ ProjectCard.propTypes = {
 const ProjectGrid = () => {
   return (
     <div className="w-full overflow-x-auto pb-6">
-      <div className="flex gap-4 min-w-max px-4">
-        {projects.map((project) => (
-          <div key={project.id} className="w-[120px]">
-            <ProjectCard {...project} />
-          </div>
-        ))}
+      <div className="flex justify-center gap-4 min-w-max px-4">
+        <div className="flex gap-4 max-w-6xl">
+          {projects.map((project) => (
+            <div key={project.id} className="w-[120px]">
+              <ProjectCard {...project} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ export const Navigation = ({
   const isHomePage = location.pathname === "/";
 
   return (
-    <div className="fixed top-0 w-full z-50 p-8">
+    <div className="w-full z-50 p-8">
       <div className="relative flex justify-end">
         {/* Logo on the left - hidden on homepage */}
         {!isHomePage && (
