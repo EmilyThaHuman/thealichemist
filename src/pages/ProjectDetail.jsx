@@ -74,11 +74,6 @@ const ProjectDetail = () => {
     );
   };
 
-  const handleThumbnailClick = (index) => {
-    setDirection(index > currentIndex ? 1 : -1);
-    setCurrentIndex(index);
-  };
-
   const slideVariants = {
     enter: (direction) => ({
       x: direction > 0 ? 500 : -500,
@@ -155,7 +150,8 @@ const ProjectDetail = () => {
                         alt={`${project.title} ${currentIndex + index + 1}`}
                         className="w-full h-full object-contain"
                         onError={(e) => {
-                          console.error(`Failed to load image: ${image}`);
+                          const error = e.target.error;
+                          console.error(`Failed to load image: ${image}`, error);
                           setImageError(true);
                         }}
                       />
