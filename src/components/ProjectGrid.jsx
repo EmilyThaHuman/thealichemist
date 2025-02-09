@@ -28,7 +28,7 @@ const createProjects = (images) => [
     id: "ali-wood",
     title: "ALI WOOD,",
     location: "CALIFORNIA",
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9",
+    image: images ? getFirstImage(images.aliWoodImages) : null,
     description: "Contemporary woodland estate",
     year: "2023",
   },
@@ -76,6 +76,12 @@ const createProjects = (images) => [
 
 export const projects = createProjects(null);
 
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center w-full h-full">
+    <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-800 rounded-full animate-spin" />
+  </div>
+);
+
 export const ProjectGrid = () => {
   const [loadedProjects, setLoadedProjects] = useState(projects);
 
@@ -88,7 +94,11 @@ export const ProjectGrid = () => {
     loadImages();
   }, []);
 
-  if (!loadedProjects) return <div>Loading...</div>;
+  if (!loadedProjects) return (
+    <div className="w-full h-[50vh] flex items-center justify-center">
+      <LoadingSpinner />
+    </div>
+  );
 
   const ProjectCard = ({ id, title, location, image, year }) => (
     <Link 
@@ -103,8 +113,8 @@ export const ProjectGrid = () => {
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-            <span className="text-gray-400">Loading...</span>
+          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+            <LoadingSpinner />
           </div>
         )}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
