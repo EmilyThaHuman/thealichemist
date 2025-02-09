@@ -116,7 +116,7 @@ const ProjectDetail = () => {
 
       <div className="flex justify-center w-full overflow-hidden mb-4">
         <div className="relative w-[75%] group">
-          <div className="aspect-[16/9] w-full relative bg-background">
+          <div className="aspect-[16/5] w-full relative bg-background">
             <AnimatePresence initial={false} custom={direction}>
               <motion.div
                 key={currentIndex}
