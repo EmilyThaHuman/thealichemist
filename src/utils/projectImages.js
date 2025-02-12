@@ -1,7 +1,21 @@
+// Helper function to get base URL for images based on environment
+const getBaseUrl = () => {
+  if (import.meta.env.PROD) {
+    // In production, use the GitHub URL
+    return import.meta.env.VITE_GIT_PROJECT_URL || 'https://github.com/EmilyThaHuman/thealichemist/blob/main/src/assets/projects';
+  }
+  // In development, use local assets
+  return '../assets/projects';
+};
+
 // Helper function to check if file exists with specific extension
 const checkImageExists = async (projectPath, number, ext) => {
   try {
-    const url = new URL(`${projectPath}/${number}.${ext}`, import.meta.url).href;
+    const baseUrl = getBaseUrl();
+    const url = import.meta.env.PROD
+      ? `${baseUrl}/${projectPath}/${number}.${ext}?raw=true` // Add ?raw=true for GitHub raw content
+      : new URL(`${projectPath}/${number}.${ext}`, import.meta.url).href;
+      
     const response = await fetch(url, { method: 'HEAD' });
     return response.ok ? url : null;
   } catch {
@@ -51,17 +65,17 @@ const initializeImages = async () => {
     vwVansImages,
     mochilasImages,
   ] = await Promise.all([
-    createNumberedImageArray('../assets/projects/BUENOS_AIRES', extensions, 26),
-    createNumberedImageArray('../assets/projects/FISHING_LODGE', extensions, 15),
-    createNumberedImageArray('../assets/projects/CHATEAU_MARMOT', extensions, 20),
-    createNumberedImageArray('../assets/projects/STUDIO', extensions, 12),
-    createNumberedImageArray('../assets/projects/SEATTLE_HOUSE', extensions, 18),
-    createNumberedImageArray('../assets/projects/CASA_MALIBU', extensions, 22),
-    createNumberedImageArray('../assets/projects/SAND_CASTLE', extensions, 16),
-    createNumberedImageArray('../assets/projects/ALI_WOOD', extensions, 10),
-    createNumberedImageArray('../assets/projects/FIT_TO_BE_TIED', extensions, 10),
-    createNumberedImageArray('../assets/projects/VW_VANS', extensions, 10),
-    createNumberedImageArray('../assets/projects/MOCHILAS', extensions, 10)
+    createNumberedImageArray('BUENOS_AIRES', extensions, 26),
+    createNumberedImageArray('FISHING_LODGE', extensions, 15),
+    createNumberedImageArray('CHATEAU_MARMOT', extensions, 20),
+    createNumberedImageArray('STUDIO', extensions, 12),
+    createNumberedImageArray('SEATTLE_HOUSE', extensions, 18),
+    createNumberedImageArray('CASA_MALIBU', extensions, 22),
+    createNumberedImageArray('SAND_CASTLE', extensions, 16),
+    createNumberedImageArray('ALI_WOOD', extensions, 10),
+    createNumberedImageArray('FIT_TO_BE_TIED', extensions, 10),
+    createNumberedImageArray('VW_VANS', extensions, 10),
+    createNumberedImageArray('MOCHILAS', extensions, 10)
   ]);
 
   return {
