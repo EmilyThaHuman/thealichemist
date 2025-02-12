@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { projects } from "@/components/ProjectGrid";
+import { initialProjects } from "@/components/ProjectGrid";
 import { motion, AnimatePresence } from "framer-motion";
 import initializeImages from '../utils/projectImages';
 
@@ -10,7 +10,11 @@ const ProjectDetail = () => {
   const [direction, setDirection] = useState(0);
   const [imageErrors, setImageErrors] = useState({});
   const [images, setImages] = useState(null);
-  const [project, setProject] = useState(projects.find((p) => p.id === id));
+  
+  // Find project across all project types
+  const project = Object.values(initialProjects)
+    .flat()
+    .find((p) => p.id === id);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -51,6 +55,12 @@ const ProjectDetail = () => {
         return images.casaMalibuImages || [project.image];
       case "sand-castle":
         return images.sandCastleImages || [project.image];
+      case "vw-vans":
+        return images.vwVansImages || [project.image];
+      case "mochilas":
+        return images.mochilasImages || [project.image];
+      case "fit-to-be-tied":
+        return images.fitToBeTiedImages || [project.image];
       default:
         return [project.image];
     }

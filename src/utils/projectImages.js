@@ -46,7 +46,10 @@ const initializeImages = async () => {
     seattleHouseImages,
     casaMalibuImages,
     sandCastleImages,
-    aliWoodImages
+    aliWoodImages,
+    fitToBeTiedImages,
+    vwVansImages,
+    mochilasImages,
   ] = await Promise.all([
     createNumberedImageArray('../assets/projects/BUENOS_AIRES', extensions, 26),
     createNumberedImageArray('../assets/projects/FISHING_LODGE', extensions, 15),
@@ -55,7 +58,10 @@ const initializeImages = async () => {
     createNumberedImageArray('../assets/projects/SEATTLE_HOUSE', extensions, 18),
     createNumberedImageArray('../assets/projects/CASA_MALIBU', extensions, 22),
     createNumberedImageArray('../assets/projects/SAND_CASTLE', extensions, 16),
-    createNumberedImageArray('../assets/projects/ALI_WOOD', extensions, 10)
+    createNumberedImageArray('../assets/projects/ALI_WOOD', extensions, 10),
+    createNumberedImageArray('../assets/projects/FIT_TO_BE_TIED', extensions, 10),
+    createNumberedImageArray('../assets/projects/VW_VANS', extensions, 10),
+    createNumberedImageArray('../assets/projects/MOCHILAS', extensions, 10)
   ]);
 
   return {
@@ -66,7 +72,10 @@ const initializeImages = async () => {
     seattleHouseImages,
     casaMalibuImages,
     sandCastleImages,
-    aliWoodImages
+    aliWoodImages,
+    fitToBeTiedImages,
+    vwVansImages,
+    mochilasImages
   };
 };
 

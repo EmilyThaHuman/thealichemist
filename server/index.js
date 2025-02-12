@@ -1,3 +1,6 @@
+/* eslint-env node */
+/* global process */
+
 import express from 'express';
 import nodemailer from 'nodemailer';
 import { google } from 'googleapis';
@@ -169,7 +172,7 @@ const startServer = async () => {
     // Test email configuration after server is running
     console.log('Testing email configuration...');
     try {
-      const transporter = await createTransporter();
+      await createTransporter();
       console.log('Email configuration is valid');
     } catch (emailError) {
       console.error('Email configuration failed, but server will continue running:', emailError);

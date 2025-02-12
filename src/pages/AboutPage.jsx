@@ -22,37 +22,25 @@ const AboutPage = () => {
           {/* Content Section */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-semibold mb-2">John Doe</h1>
+              <h1 className="text-3xl font-semibold mb-2">Ali Vogt</h1>
               <h2 className="text-xl text-muted-foreground">Principal Architect</h2>
             </div>
 
             <div className="space-y-4 text-lg leading-relaxed">
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod 
-                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim 
-                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex 
-                ea commodo consequat.
-              </p>
-              
-              <p>
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum 
-                dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non 
-                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
-
-              <p>
-                Sed ut perspiciatis unde omnis iste natus error sit voluptatem 
-                accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae 
-                ab illo inventore veritatis et quasi architecto beatae vitae dicta 
-                sunt explicabo.
+              I specialize in transforming ordinary spaces and things into extraordinary 
+              creations by breathing life into old structures or materials. I love to 
+              create sensible floor plans from forgotten buildngs or misbuilt spaces. 
+              My experience spans from Buenos Aires, Mexico, and the USA, encompassing 
+              architecture, interior design, product design, and the hospitality business.
               </p>
             </div>
 
             <div className="pt-4">
               <h3 className="text-xl font-medium mb-4">Education</h3>
               <ul className="space-y-2">
-                <li>Master of Architecture, Harvard University</li>
-                <li>Bachelor of Arts in Architecture, Yale University</li>
+                <li>Bachelor of Arts, Colorado College</li>
+                <li>Interior Design, Bellevue College</li>
               </ul>
             </div>
           </div>

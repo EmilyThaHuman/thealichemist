@@ -7,6 +7,10 @@ import ContactPage from "@/pages/ContactPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import ProjectDetail from "@/pages/ProjectDetail";
 import ProjectsPage from "@/pages/ProjectsPage";
+import ArchitecturePage from "@/pages/projects/ArchitecturePage";
+import ProductDesignPage from "@/pages/projects/ProductDesignPage";
+import ClothingDesignPage from "@/pages/projects/ClothingDesignPage";
+import RentalsPage from "@/pages/projects/RentalsPage";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +34,22 @@ export const router = createBrowserRouter([
       {
         path: "projects",
         element: <ProjectsPage />,
+      },
+      {
+        path: "projects/architecture",
+        element: <ArchitecturePage />,
+      },
+      {
+        path: "projects/production",
+        element: <ProductDesignPage />,
+      },
+      {
+        path: "projects/clothing",
+        element: <ClothingDesignPage />,
+      },
+      {
+        path: "projects/rentals",
+        element: <RentalsPage />,
       },
       {
         path: "projects/:id",

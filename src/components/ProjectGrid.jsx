@@ -3,78 +3,145 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import initializeImages from "@/utils/projectImages";
 
+// Project type constants
+export const PROJECT_TYPES = {
+  ARCHITECTURE: 'architecture',
+  PRODUCT: 'product',
+  CLOTHING: 'clothing',
+  RENTALS: 'rentals'
+};
+
 const getFirstImage = (images) => {
   return images && images.length > 0 ? images[0] : null;
 };
 
-const createProjects = (images) => [
-  {
-    id: "buenos-aires",
-    title: "BUENOS AIRES,",
-    location: "ARGENTINA",
-    image: images ? getFirstImage(images.buenosAiresImages) : null,
-    description: "Modern urban residence with traditional influences",
-    year: "2023",
-  },
-  {
-    id: "fishing-lodge",
-    title: "FISHING LODGE,",
-    location: "MONTANA",
-    image: images ? getFirstImage(images.fishingLodgeImages) : null,
-    description: "Rustic luxury retreat",
-    year: "2022",
-  },
-  {
-    id: "ali-wood",
-    title: "ALI WOOD,",
-    location: "CALIFORNIA",
-    image: images ? getFirstImage(images.aliWoodImages) : null,
-    description: "Contemporary woodland estate",
-    year: "2023",
-  },
-  {
-    id: "chateau-marmot",
-    title: "CHATEAU MARMOT,",
-    location: "FRANCE",
-    image: images ? getFirstImage(images.chateauMarmotImages) : null,
-    description: "Historic chateau renovation",
-    year: "2022",
-  },
-  {
-    id: "studio",
-    title: "STUDIO,",
-    location: "NEW YORK",
-    image: images ? getFirstImage(images.studioImages) : null,
-    description: "Urban artist loft conversion",
-    year: "2023",
-  },
-  {
-    id: "seattle-house",
-    title: "SEATTLE HOUSE,",
-    location: "WASHINGTON",
-    image: images ? getFirstImage(images.seattleHouseImages) : null,
-    description: "Pacific Northwest modern home",
-    year: "2023",
-  },
-  {
-    id: "casa-malibu",
-    title: "CASA MALIBU,",
-    location: "CALIFORNIA",
-    image: images ? getFirstImage(images.casaMalibuImages) : null,
-    description: "Oceanfront contemporary villa",
-    year: "2022",
-  },
-  {
-    id: "sand-castle",
-    title: "THE SAND CASTLE,",
-    location: "HAMPTONS",
-    image: images ? getFirstImage(images.sandCastleImages) : null,
-    description: "Beachfront modern estate",
-    year: "2023",
-  },
-];
+// Project creators for each type
+const projectCreators = {
+  [PROJECT_TYPES.ARCHITECTURE]: (images) => [
+    {
+      id: "buenos-aires",
+      type: PROJECT_TYPES.ARCHITECTURE,
+      title: "BUENOS AIRES,",
+      location: "ARGENTINA",
+      image: images ? getFirstImage(images.buenosAiresImages) : null,
+      description: "Design and build of all furniture and interior",
+      year: "2012",
+    },
+    {
+      id: "fishing-lodge",
+      type: PROJECT_TYPES.ARCHITECTURE,
+      title: "FISHING LODGE,",
+      location: "TWISP, WASHINGTON",
+      image: images ? getFirstImage(images.fishingLodgeImages) : null,
+      description: "Complete reconstruction and decoration of a 1970s cabin into a Western turn-of-the-century lodge",
+      year: "2022",
+    },
+    {
+      id: "ali-wood",
+      type: PROJECT_TYPES.ARCHITECTURE,
+      title: "ALIWOOD,",
+      location: "TWISP, WASHINGTON",
+      image: images ? getFirstImage(images.aliWoodImages) : null,
+      description: "Conversion of a massive three-bay garage into an Argentine estancia with a pool",
+      year: "2018",
+    },
+    {
+      id: "chateau-marmot",
+      type: PROJECT_TYPES.ARCHITECTURE,
+      title: "CHATEAU MARMOT,",
+      location: "TWISP, WASHINGTON",
+      image: images ? getFirstImage(images.chateauMarmotImages) : null,
+      description: "Interior design transformation of a former craftsman home into a richer, more interesting space",
+      year: "2023",
+    },
+    {
+      id: "studio",
+      type: PROJECT_TYPES.ARCHITECTURE,
+      title: "STUDIO,",
+      location: "TWISP, WASHINGTON",
+      image: images ? getFirstImage(images.studioImages) : null,
+      description: "Transformation of a garage bay into a new artist's loft in New York City",
+      year: "2023",
+    },
+    {
+      id: "seattle-house",
+      type: PROJECT_TYPES.ARCHITECTURE,
+      title: "SEATTLE HOUSE,",
+      location: "SEATTLE, WASHINGTON",
+      image: images ? getFirstImage(images.seattleHouseImages) : null,
+      description: "Pacific Northwest traditional home",
+      year: "2007",
+    },
+    {
+      id: "casa-malibu",
+      type: PROJECT_TYPES.ARCHITECTURE,
+      title: "CASA MALIBU,",
+      location: "CERRITOS BEACH, BCS, MEXICO",
+      image: images ? getFirstImage(images.casaMalibuImages) : null,
+      description: "Build-out of an abandoned cinderblock two-bedroom shell into a modern Hollywood Hills-style rambler",
+      year: "2022",
+    },
+    {
+      id: "sand-castle",
+      type: PROJECT_TYPES.ARCHITECTURE,
+      title: "THE SAND CASTLE,",
+      location: "RANCHO NUEVO, BCS, MEXICO",
+      image: images ? getFirstImage(images.sandCastleImages) : null,
+      description: "Complete reconstruction and transformation of a 1990s santa-fe style pink casa into a mediterranean beach house",
+      year: "2024",
+    },
+  ],
+  
+  [PROJECT_TYPES.PRODUCT]: (images) => [
+    {
+      id: "vw-vans",
+      type: PROJECT_TYPES.PRODUCT,
+      title: "VW VANS,",
+      location: "TWISP, WASHINGTON",
+      image: images ? getFirstImage(images.vwVansImages) : null,
+      description: "Custom restoration and design of vintage Volkswagen vans",
+      year: "2023",
+    },
+    {
+      id: "mochilas",
+      type: PROJECT_TYPES.PRODUCT,
+      title: "MOCHILAS,",
+      location: "COLOMBIA",
+      image: images ? getFirstImage(images.mochilasImages) : null,
+      description: "Traditional Colombian bag designs with modern interpretations",
+      year: "2024",
+    },
+  ],
+  
+  [PROJECT_TYPES.CLOTHING]: (images) => [
+    {
+      id: "fit-to-be-tied",
+      type: PROJECT_TYPES.CLOTHING,
+      title: "FIT TO BE TIED,",
+      location: "TWISP, WASHINGTON",
+      image: images ? getFirstImage(images.fitToBeTiedImages) : null,
+      description: "Bespoke western wear and custom leather goods",
+      year: "2023",
+    },
+  ],
+  
+  [PROJECT_TYPES.RENTALS]: (images) => [
+    {
+      id: "rental-1",
+      type: PROJECT_TYPES.RENTALS,
+      title: "RENTAL ONE,",
+      location: "TWISP, WASHINGTON",
+      image: images ? getFirstImage(images.rentalImages) : null,
+      description: "Rental property",
+      year: "2024",
+    },
+  ],
+};
 
-export const projects = createProjects(null);
+// Export initial projects for each type
+export const initialProjects = Object.fromEntries(
+  Object.entries(projectCreators).map(([type, creator]) => [type, creator(null)])
+);
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center w-full h-full">
@@ -82,17 +149,20 @@ const LoadingSpinner = () => (
   </div>
 );
 
-export const ProjectGrid = () => {
-  const [loadedProjects, setLoadedProjects] = useState(projects);
+export const ProjectGrid = ({ projectType }) => {
+  const [loadedProjects, setLoadedProjects] = useState(initialProjects[projectType] || []);
 
   useEffect(() => {
     const loadImages = async () => {
       const imageArrays = await initializeImages();
-      setLoadedProjects(createProjects(imageArrays));
+      const creator = projectCreators[projectType];
+      if (creator) {
+        setLoadedProjects(creator(imageArrays));
+      }
     };
     
     loadImages();
-  }, []);
+  }, [projectType]);
 
   if (!loadedProjects) return (
     <div className="w-full h-[50vh] flex items-center justify-center">
@@ -149,6 +219,10 @@ export const ProjectGrid = () => {
       </div>
     </div>
   );
+};
+
+ProjectGrid.propTypes = {
+  projectType: PropTypes.oneOf(Object.values(PROJECT_TYPES)).isRequired,
 };
 
 export default ProjectGrid; 
