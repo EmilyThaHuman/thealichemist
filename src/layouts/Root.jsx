@@ -17,7 +17,6 @@ export default function Root() {
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <div className="relative min-h-screen flex flex-col">
         <Navigation navLinks={navLinks} />
-        {/* <Navbar /> */}
         <main className={`flex-grow ${!isHomePage ? "pt-[260px]" : ""}`}>
           <Outlet />
         </main>

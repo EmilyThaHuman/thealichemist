@@ -1,35 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { projects } from "@/components/ProjectGrid";
+import { initialProjects } from "@/components/ProjectGrid";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  buenosAiresImages,
-  fishingLodgeImages,
-  chateauMarmotImages,
-  studioImages,
-  seattleHouseImages,
-  casaMalibuImages,
-  sandCastleImages
-} from "@/utils/projectImages";
+import initializeImages from '../utils/projectImages';
 
 const ProjectDetail = () => {
   const { id } = useParams();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const [imageError, setImageError] = useState(false);
+  const [imageErrors, setImageErrors] = useState({});
+  const [images, setImages] = useState(null);
+  
+  // Find project across all project types
+  const project = Object.values(initialProjects)
+    .flat()
+    .find((p) => p.id === id);
 
-  const project = projects.find((p) => p.id === id);
+  useEffect(() => {
+    const loadImages = async () => {
+      const imageArrays = await initializeImages();
+      setImages(imageArrays);
+    };
+    
+    loadImages();
+  }, []);
 
   if (!project) {
     return <div>Project not found</div>;
   }
 
+  if (!images) return <div>Loading...</div>;
+
   const getProjectImages = (projectId) => {
+    if (!images) return [project.image];
+
     switch (projectId) {
       case "buenos-aires":
-        return buenosAiresImages;
+        return images.buenosAiresImages || [project.image];
       case "fishing-lodge":
-        return fishingLodgeImages;
+        return images.fishingLodgeImages || [project.image];
       case "ali-wood":
         return [
           project.image,
@@ -37,15 +46,21 @@ const ProjectDetail = () => {
           "https://images.unsplash.com/photo-1600607687644-c7171b42498a",
         ];
       case "chateau-marmot":
-        return chateauMarmotImages;
+        return images.chateauMarmotImages || [project.image];
       case "studio":
-        return studioImages;
+        return images.studioImages || [project.image];
       case "seattle-house":
-        return seattleHouseImages;
+        return images.seattleHouseImages || [project.image];
       case "casa-malibu":
-        return casaMalibuImages;
+        return images.casaMalibuImages || [project.image];
       case "sand-castle":
-        return sandCastleImages;
+        return images.sandCastleImages || [project.image];
+      case "vw-vans":
+        return images.vwVansImages || [project.image];
+      case "mochilas":
+        return images.mochilasImages || [project.image];
+      case "fit-to-be-tied":
+        return images.fitToBeTiedImages || [project.image];
       default:
         return [project.image];
     }
@@ -72,11 +87,6 @@ const ProjectDetail = () => {
     setCurrentIndex(prev => 
       prev === 0 ? projectImages.length - 1 : prev - 1
     );
-  };
-
-  const handleThumbnailClick = (index) => {
-    setDirection(index > currentIndex ? 1 : -1);
-    setCurrentIndex(index);
   };
 
   const slideVariants = {
@@ -121,7 +131,7 @@ const ProjectDetail = () => {
 
       <div className="flex justify-center w-full overflow-hidden mb-4">
         <div className="relative w-[75%] group">
-          <div className="aspect-[16/9] w-full relative bg-background">
+          <div className="aspect-[16/5] w-full relative bg-background">
             <AnimatePresence initial={false} custom={direction}>
               <motion.div
                 key={currentIndex}
@@ -150,18 +160,29 @@ const ProjectDetail = () => {
                 <div className="grid grid-cols-2 gap-4 w-full h-full px-4">
                   {currentPair.map((image, index) => (
                     <div key={index} className="relative h-full">
-                      <img
-                        src={image}
-                        alt={`${project.title} ${currentIndex + index + 1}`}
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                          console.error(`Failed to load image: ${image}`);
-                          setImageError(true);
-                        }}
-                      />
-                      {imageError && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
-                          <p>Image failed to load: {image}</p>
+                      {!imageErrors[image] ? (
+                        <img
+                          src={image}
+                          alt={`${project.title} ${currentIndex + index + 1}`}
+                          className="w-full h-full object-contain"
+                          onError={(e) => {
+                            if (e.target.src !== project.image) {
+                              console.warn(`Failed to load image: ${image}, falling back to thumbnail`);
+                              e.target.src = project.image;
+                              setImageErrors(prev => ({
+                                ...prev,
+                                [image]: true
+                              }));
+                            }
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                          <img
+                            src={project.image}
+                            alt={`${project.title} thumbnail`}
+                            className="w-full h-full object-contain"
+                          />
                         </div>
                       )}
                     </div>

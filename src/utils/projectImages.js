@@ -1,38 +1,82 @@
-// Helper function to create array of numbered images
-const createNumberedImageArray = (projectPath, extension, count) => {
-  return Array.from({ length: count }, (_, i) => {
-    const number = i + 1;
-    return new URL(`${projectPath}/${number}.${extension}`, import.meta.url).href;
-  });
+// Helper function to check if file exists with specific extension
+const checkImageExists = async (projectPath, number, ext) => {
+  try {
+    const url = new URL(`${projectPath}/${number}.${ext}`, import.meta.url).href;
+    const response = await fetch(url, { method: 'HEAD' });
+    return response.ok ? url : null;
+  } catch {
+    return null;
+  }
 };
 
-// Buenos Aires Images (26 images)
-const buenosAiresImages = createNumberedImageArray('../assets/projects/BUENOS_AIRES', 'JPG', 26);
+// Helper function to try loading image with different extensions
+const tryLoadImage = async (projectPath, number, extensions) => {
+  for (const ext of extensions) {
+    const url = await checkImageExists(projectPath, number, ext);
+    if (url) {
+      return url;
+    }
+  }
+  console.warn(`Image ${number} not found in ${projectPath} with extensions:`, extensions);
+  return null;
+};
 
-// Fishing Lodge Images (15 images)
-const fishingLodgeImages = createNumberedImageArray('../assets/projects/FISHING_LODGE', 'jpg', 15);
+// Helper function to create array of numbered images
+const createNumberedImageArray = async (projectPath, extensions, count) => {
+  const extensionsArray = Array.isArray(extensions) ? extensions : [extensions];
+  
+  const imagePromises = Array.from({ length: count }, (_, i) => {
+    const number = i + 1;
+    return tryLoadImage(projectPath, number, extensionsArray);
+  });
 
-// Chateau Marmot Images (20 images)
-const chateauMarmotImages = createNumberedImageArray('../assets/projects/CHATEAU_MARMOT', 'jpg', 20);
+  const images = await Promise.all(imagePromises);
+  return images.filter(Boolean); // Remove any null values if image loading failed
+};
 
-// Studio Images (12 images)
-const studioImages = createNumberedImageArray('../assets/projects/STUDIO', 'jpg', 12);
+// Create and export image arrays
+const initializeImages = async () => {
+  const extensions = ['jpg', 'jpeg', 'JPG', 'JPEG'];
 
-// Seattle House Images (18 images)
-const seattleHouseImages = createNumberedImageArray('../assets/projects/SEATTLE_HOUSE', 'jpg', 18);
+  const [
+    buenosAiresImages,
+    fishingLodgeImages,
+    chateauMarmotImages,
+    studioImages,
+    seattleHouseImages,
+    casaMalibuImages,
+    sandCastleImages,
+    aliWoodImages,
+    fitToBeTiedImages,
+    vwVansImages,
+    mochilasImages,
+  ] = await Promise.all([
+    createNumberedImageArray('../assets/projects/BUENOS_AIRES', extensions, 26),
+    createNumberedImageArray('../assets/projects/FISHING_LODGE', extensions, 15),
+    createNumberedImageArray('../assets/projects/CHATEAU_MARMOT', extensions, 20),
+    createNumberedImageArray('../assets/projects/STUDIO', extensions, 12),
+    createNumberedImageArray('../assets/projects/SEATTLE_HOUSE', extensions, 18),
+    createNumberedImageArray('../assets/projects/CASA_MALIBU', extensions, 22),
+    createNumberedImageArray('../assets/projects/SAND_CASTLE', extensions, 16),
+    createNumberedImageArray('../assets/projects/ALI_WOOD', extensions, 10),
+    createNumberedImageArray('../assets/projects/FIT_TO_BE_TIED', extensions, 10),
+    createNumberedImageArray('../assets/projects/VW_VANS', extensions, 10),
+    createNumberedImageArray('../assets/projects/MOCHILAS', extensions, 10)
+  ]);
 
-// Casa Malibu Images (22 images)
-const casaMalibuImages = createNumberedImageArray('../assets/projects/CASA_MALIBU', 'jpg', 22);
+  return {
+    buenosAiresImages,
+    fishingLodgeImages,
+    chateauMarmotImages,
+    studioImages,
+    seattleHouseImages,
+    casaMalibuImages,
+    sandCastleImages,
+    aliWoodImages,
+    fitToBeTiedImages,
+    vwVansImages,
+    mochilasImages
+  };
+};
 
-// Sand Castle Images (16 images)
-const sandCastleImages = createNumberedImageArray('../assets/projects/SAND_CASTLE', 'jpg', 16);
-
-export {
-  buenosAiresImages,
-  fishingLodgeImages,
-  chateauMarmotImages,
-  studioImages,
-  seattleHouseImages,
-  casaMalibuImages,
-  sandCastleImages
-}; 
+export default initializeImages; 
