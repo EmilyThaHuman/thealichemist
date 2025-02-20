@@ -8,7 +8,7 @@ export default function Root() {
   const excludePadding = location.pathname === "/" || location.pathname === "/projects";
 
   const navLinks = [
-    { href: "/projects", text: "OUR WORK" },
+    { href: "/projects/architecture", text: "OUR WORK" },
     { href: "/about", text: "ABOUT US" },
     { href: "/contact", text: "CONTACT" },
   ];

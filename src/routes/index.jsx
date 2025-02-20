@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import Root from "@/layouts/Root";
 import ErrorPage from "@/pages/ErrorPage";
 import HomePage from "@/pages/HomePage";
@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
         element: (
           <HomePage
             navLinks={[
-              { href: "/projects", text: "OUR WORK" },
+              { href: "/projects/architecture", text: "OUR WORK" },
               { href: "/about", text: "ABOUT US" },
               { href: "/press", text: "PRESS & AWARDS" },
               { href: "/contact", text: "CONTACT" },
@@ -33,7 +33,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "projects",
-        element: <ProjectsPage />,
+        element: <Navigate to="/projects/architecture" replace />,
       },
       {
         path: "projects/architecture",
