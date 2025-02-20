@@ -14,7 +14,9 @@ export const PROJECT_CONFIG = {
   ALI_WOOD: { path: 'ALI_WOOD', count: 10 },
   FIT_TO_BE_TIED: { path: 'FIT_TO_BE_TIED', count: 10 },
   VW_VANS: { path: 'VW_VANS', count: 10 },
-  MOCHILAS: { path: 'MOCHILAS', count: 10 }
+  MOCHILAS: { path: 'MOCHILAS', count: 10 },
+  SCHUYLERS_HOUSE: { path: 'SCHUYLERS_HOUSE', count: 10 },
+  MIKES_HOUSE: { path: 'MIKES_HOUSE', count: 10 }
 }
 
 // Cache configuration
@@ -26,12 +28,14 @@ const isCacheValid = (timestamp) => {
 }
 
 // Helper function to get public URL for a file
-const getPublicUrl = (path) => {
+const getPublicUrl = async (path) => {
   try {
-    const { data } = supabase.storage
+    console.log('Getting public URL for path:', path)
+    const { data } = await supabase.storage
       .from('projects')
       .getPublicUrl(path)
     
+    console.log('Public URL result:', data?.publicUrl)
     return data?.publicUrl || null
   } catch (error) {
     console.error(`Error getting public URL for ${path}:`, error)
@@ -42,6 +46,7 @@ const getPublicUrl = (path) => {
 // Helper function to list files in a project folder
 const listProjectFiles = async (projectPath) => {
   try {
+    console.log('Listing files for project path:', projectPath)
     const { data: files, error } = await supabase.storage
       .from('projects')
       .list(projectPath, {
@@ -49,6 +54,7 @@ const listProjectFiles = async (projectPath) => {
       })
 
     if (error) throw error
+    console.log('Files found:', files?.length || 0)
     return files || []
   } catch (error) {
     console.error(`Error listing files for ${projectPath}:`, error)
@@ -65,8 +71,11 @@ const processBatch = async (files, projectPath, count, startIdx, batchSize) => {
     const file = files[i]
     if (file && file.name) {
       const path = `${projectPath}/${file.name}`
-      const url = getPublicUrl(path)
-      if (url) results.push({ index: i + 1, url })
+      const url = await getPublicUrl(path)
+      if (url) {
+        console.log(`Successfully got URL for ${path}:`, url)
+        results.push({ index: i + 1, url })
+      }
     }
   }
 
@@ -76,8 +85,12 @@ const processBatch = async (files, projectPath, count, startIdx, batchSize) => {
 // Helper function to create array of numbered images with batching
 const createNumberedImageArray = async (projectPath, count, onProgress) => {
   try {
+    console.log('Creating numbered image array for:', projectPath)
     const files = await listProjectFiles(projectPath)
-    if (!files.length) return []
+    if (!files.length) {
+      console.warn(`No files found for project: ${projectPath}`)
+      return []
+    }
 
     // Sort files by numeric order
     const sortedFiles = files.sort((a, b) => {
@@ -86,6 +99,7 @@ const createNumberedImageArray = async (projectPath, count, onProgress) => {
       return numA - numB
     })
 
+    console.log(`Found ${sortedFiles.length} files for ${projectPath}`)
     const BATCH_SIZE = 5 // Process 5 images at a time
     const images = []
     
@@ -103,6 +117,7 @@ const createNumberedImageArray = async (projectPath, count, onProgress) => {
       }
     }
 
+    console.log(`Successfully loaded ${images.length} images for ${projectPath}`)
     return images
   } catch (error) {
     console.error(`Error creating image array for ${projectPath}:`, error)

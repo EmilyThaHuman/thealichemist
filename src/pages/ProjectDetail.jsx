@@ -2,14 +2,32 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { initialProjects } from "@/components/ProjectGrid";
 import { motion, AnimatePresence } from "framer-motion";
-import initializeImages from '../utils/projectImages';
+import { useProjectImagesStore } from "@/utils/projectImages";
+
+// Helper function to preload an image
+const preloadImage = (src) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+};
+
+// Convert project ID to storage key format
+const getProjectKey = (projectId) => {
+  if (!projectId) return null;
+  return projectId.toUpperCase().replace(/-/g, '_');
+};
 
 const ProjectDetail = () => {
   const { id } = useParams();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [imageErrors, setImageErrors] = useState({});
-  const [images, setImages] = useState(null);
+  const [preloadedImages, setPreloadedImages] = useState({});
+  const [error, setError] = useState(null);
+  const { loadProject, getProjectImages } = useProjectImagesStore();
   
   // Find project across all project types
   const project = Object.values(initialProjects)
@@ -18,55 +36,83 @@ const ProjectDetail = () => {
 
   useEffect(() => {
     const loadImages = async () => {
-      const imageArrays = await initializeImages();
-      setImages(imageArrays);
+      if (!project?.id) {
+        console.warn('Project ID not available');
+        return;
+      }
+      
+      try {
+        const key = getProjectKey(project.id);
+        if (!key) {
+          throw new Error('Invalid project ID');
+        }
+        console.log('Loading project with key:', key); // Debug log
+        await loadProject(key);
+        setError(null);
+      } catch (err) {
+        console.error('Error loading project:', err);
+        setError(err.message);
+      }
     };
     
     loadImages();
-  }, []);
+  }, [project, loadProject]);
+
+  // Preload images effect
+  useEffect(() => {
+    const preloadNextImages = async () => {
+      if (!project?.id) return;
+      
+      try {
+        const key = getProjectKey(project.id);
+        if (!key) return;
+        
+        const images = getProjectImages(key);
+        if (!images?.length) return;
+
+        // Preload next 4 images (2 pairs)
+        const nextIndexes = [
+          (currentIndex + 1) % images.length,
+          (currentIndex + 2) % images.length,
+          (currentIndex + 3) % images.length,
+          (currentIndex + 4) % images.length,
+        ];
+
+        await Promise.all(
+          nextIndexes.map(async (index) => {
+            const imageUrl = images[index];
+            if (imageUrl && !preloadedImages[imageUrl]) {
+              await preloadImage(imageUrl);
+              setPreloadedImages(prev => ({ ...prev, [imageUrl]: true }));
+            }
+          })
+        );
+      } catch (error) {
+        console.error('Error preloading images:', error);
+      }
+    };
+
+    preloadNextImages();
+  }, [currentIndex, project, getProjectImages, preloadedImages]);
 
   if (!project) {
     return <div>Project not found</div>;
   }
 
-  if (!images) return <div>Loading...</div>;
+  if (error) {
+    return <div>Error loading images: {error}</div>;
+  }
 
-  const getProjectImages = (projectId) => {
-    if (!images) return [project.image];
+  const projectKey = getProjectKey(project.id);
+  if (!projectKey) {
+    return <div>Invalid project configuration</div>;
+  }
 
-    switch (projectId) {
-      case "buenos-aires":
-        return images.buenosAiresImages || [project.image];
-      case "fishing-lodge":
-        return images.fishingLodgeImages || [project.image];
-      case "ali-wood":
-        return [
-          project.image,
-          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
-          "https://images.unsplash.com/photo-1600607687644-c7171b42498a",
-        ];
-      case "chateau-marmot":
-        return images.chateauMarmotImages || [project.image];
-      case "studio":
-        return images.studioImages || [project.image];
-      case "seattle-house":
-        return images.seattleHouseImages || [project.image];
-      case "casa-malibu":
-        return images.casaMalibuImages || [project.image];
-      case "sand-castle":
-        return images.sandCastleImages || [project.image];
-      case "vw-vans":
-        return images.vwVansImages || [project.image];
-      case "mochilas":
-        return images.mochilasImages || [project.image];
-      case "fit-to-be-tied":
-        return images.fitToBeTiedImages || [project.image];
-      default:
-        return [project.image];
-    }
-  };
+  const projectImages = getProjectImages(projectKey);
 
-  const projectImages = getProjectImages(id);
+  if (!projectImages || projectImages.length === 0) {
+    return <div>Loading images...</div>;
+  }
 
   const getCurrentPair = () => {
     return [
@@ -79,30 +125,33 @@ const ProjectDetail = () => {
 
   const goToNext = () => {
     setDirection(1);
-    setCurrentIndex(prev => (prev + 1) % projectImages.length);
+    setCurrentIndex(prev => (prev + 2) % projectImages.length);
   };
 
   const goToPrevious = () => {
     setDirection(-1);
     setCurrentIndex(prev => 
-      prev === 0 ? projectImages.length - 1 : prev - 1
+      prev <= 1 ? projectImages.length - (projectImages.length % 2 || 2) : prev - 2
     );
   };
 
   const slideVariants = {
     enter: (direction) => ({
-      x: direction > 0 ? 500 : -500,
-      opacity: 0
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 0.95
     }),
     center: {
       zIndex: 1,
       x: 0,
-      opacity: 1
+      opacity: 1,
+      scale: 1
     },
     exit: (direction) => ({
       zIndex: 0,
-      x: direction < 0 ? 500 : -500,
-      opacity: 0
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 0.95
     })
   };
 
@@ -111,6 +160,7 @@ const ProjectDetail = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
       className="bg-background pt-4"
     >
       <div className="container mx-auto px-4">
@@ -130,8 +180,8 @@ const ProjectDetail = () => {
       </div>
 
       <div className="flex justify-center w-full overflow-hidden mb-4">
-        <div className="relative w-[75%] group">
-          <div className="aspect-[16/5] w-full relative bg-background">
+        <div className="relative w-[90%] max-w-7xl group">
+          <div className="min-h-[400px] md:min-h-[500px] lg:min-h-[600px] w-full relative bg-background">
             <AnimatePresence initial={false} custom={direction}>
               <motion.div
                 key={currentIndex}
@@ -143,28 +193,32 @@ const ProjectDetail = () => {
                 transition={{
                   x: { 
                     type: "spring", 
-                    stiffness: 300,
-                    damping: 30,
-                    mass: 1,
-                    restDelta: 0.01,
-                    restSpeed: 0.01,
+                    stiffness: 200,
+                    damping: 25,
+                    mass: 0.8,
+                    restDelta: 0.001,
+                    restSpeed: 0.001,
                     velocity: 0
                   },
                   opacity: { 
-                    duration: 0.2,
+                    duration: 0.4,
+                    ease: [0.4, 0, 0.2, 1]
+                  },
+                  scale: {
+                    duration: 0.4,
                     ease: [0.4, 0, 0.2, 1]
                   }
                 }}
                 className="absolute inset-0 flex items-center justify-center"
               >
-                <div className="grid grid-cols-2 gap-4 w-full h-full px-4">
+                <div className="grid grid-cols-2 gap-4 w-full h-full p-4">
                   {currentPair.map((image, index) => (
-                    <div key={index} className="relative h-full">
+                    <div key={index} className="relative flex items-center justify-center h-full bg-background/50">
                       {!imageErrors[image] ? (
                         <img
                           src={image}
                           alt={`${project.title} ${currentIndex + index + 1}`}
-                          className="w-full h-full object-contain"
+                          className="max-w-full max-h-full w-auto h-auto object-contain"
                           onError={(e) => {
                             if (e.target.src !== project.image) {
                               console.warn(`Failed to load image: ${image}, falling back to thumbnail`);
@@ -177,11 +231,11 @@ const ProjectDetail = () => {
                           }}
                         />
                       ) : (
-                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <div className="w-full h-full flex items-center justify-center">
                           <img
                             src={project.image}
                             alt={`${project.title} thumbnail`}
-                            className="w-full h-full object-contain"
+                            className="max-w-full max-h-full w-auto h-auto object-contain"
                           />
                         </div>
                       )}

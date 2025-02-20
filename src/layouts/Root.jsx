@@ -5,7 +5,7 @@ import { Navigation } from "@/components/Navigation";
 
 export default function Root() {
   const location = useLocation();
-  const isHomePage = location.pathname === "/";
+  const excludePadding = location.pathname === "/" || location.pathname === "/projects";
 
   const navLinks = [
     { href: "/projects", text: "OUR WORK" },
@@ -17,7 +17,7 @@ export default function Root() {
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <div className="relative min-h-screen flex flex-col">
         <Navigation navLinks={navLinks} />
-        <main className={`flex-grow ${!isHomePage ? "pt-[260px]" : ""}`}>
+        <main className={`flex-grow ${!excludePadding ? "pt-[50px]" : ""}`}>
           <Outlet />
         </main>
         <Footer />

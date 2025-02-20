@@ -7,12 +7,12 @@ export default function ProjectsPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="w-full -mt-10"
+      className="w-full -mt-36"
     >
-      <div className="container mx-auto">
-        <div className="max-w-2xl mb-12 px-4">
-          <h1 className="text-4xl font-bold mb-4">Our Projects</h1>
-          <p className="text-muted-foreground">
+      <div className="px-4">
+        <div className="max-w-2xl mb-4">
+          <h1 className="text-4xl font-bold mb-1">Our Projects</h1>
+          <p className="text-muted-foreground text-sm">
             Explore our portfolio of architectural projects, each uniquely designed
             to transform spaces and enhance lives.
           </p>

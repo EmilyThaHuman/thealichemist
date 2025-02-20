@@ -78,6 +78,23 @@ const projectCreators = {
       description: "Complete reconstruction and transformation of a 1990s santa-fe style pink casa into a mediterranean beach house",
       year: "2024",
     },
+    {
+      id: "schuyler-house",
+      type: PROJECT_TYPES.ARCHITECTURE,
+      title: "SCHUYLER HOUSE,",
+      location: "TWISP, WASHINGTON",
+      description: "Pacific Northwest traditional home",
+      year: "2023",
+    },
+    {
+      id: "mike-house",
+      type: PROJECT_TYPES.ARCHITECTURE,
+      title: "MIKE HOUSE,",
+      location: "TWISP, WASHINGTON",
+      description: "Pacific Northwest traditional home",
+      year: "2023",
+    },
+    
   ],
   
   [PROJECT_TYPES.PRODUCT]: () => [
@@ -138,20 +155,40 @@ LoadingSpinner.displayName = 'LoadingSpinner'
 const getProjectKeysByType = (type) => {
   switch (type) {
     case PROJECT_TYPES.ARCHITECTURE:
-      return ['BUENOS_AIRES', 'FISHING_LODGE', 'CHATEAU_MARMOT', 'STUDIO', 
-              'SEATTLE_HOUSE', 'CASA_MALIBU', 'SAND_CASTLE', 'ALI_WOOD']
+      return [
+        'BUENOS_AIRES',
+        'FISHING_LODGE',
+        'ALI_WOOD',
+        'CHATEAU_MARMOT',
+        'STUDIO',
+        'SEATTLE_HOUSE',
+        'CASA_MALIBU',
+        'SAND_CASTLE',
+        'SCHUYLERS_HOUSE',
+        'MIKES_HOUSE'
+      ]
     case PROJECT_TYPES.PRODUCT:
       return ['VW_VANS', 'MOCHILAS']
     case PROJECT_TYPES.CLOTHING:
       return ['FIT_TO_BE_TIED']
     case PROJECT_TYPES.RENTALS:
-      return ['RENTAL_1']
+      return []  // No rentals configured in the store yet
     default:
       return []
   }
 }
 
-const ProjectCard = ({ id, title, location, imageUrl, year }) => {
+// Helper function to preload an image
+const preloadImage = (src) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+};
+
+const ProjectCard = ({ id, title, location, imageUrl, year, onMouseEnter }) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
 
@@ -168,6 +205,7 @@ const ProjectCard = ({ id, title, location, imageUrl, year }) => {
     <Link 
       to={`/projects/${id}`}
       className="group block transition-all duration-300 hover:opacity-90"
+      onMouseEnter={onMouseEnter}
     >
       <div className="relative aspect-[0.4] mb-2 overflow-hidden">
         {!isImageLoaded && !imageError && (
@@ -184,6 +222,7 @@ const ProjectCard = ({ id, title, location, imageUrl, year }) => {
             }`}
             onLoad={handleImageLoad}
             onError={handleImageError}
+            loading="lazy"
           />
         ) : (
           <div className="w-full h-full bg-gray-100 flex items-center justify-center">
@@ -208,6 +247,7 @@ ProjectCard.propTypes = {
   location: PropTypes.string.isRequired,
   imageUrl: PropTypes.string,
   year: PropTypes.string.isRequired,
+  onMouseEnter: PropTypes.func.isRequired,
 }
 
 ProjectCard.displayName = 'ProjectCard'
@@ -217,10 +257,28 @@ export const ProjectGrid = ({ projectType }) => {
   const { 
     loadProject, 
     getProjectImages,
-    isProjectLoading,
-    getProjectProgress,
     error 
   } = useProjectImagesStore()
+
+  // Function to preload project detail images
+  const preloadProjectImages = async (projectId) => {
+    // Convert project ID to match exact storage keys
+    const projectKey = projectId
+      .toUpperCase()
+      .replace(/-/g, '_');
+    
+    try {
+      await loadProject(projectKey);
+      const images = getProjectImages(projectKey);
+      
+      // Preload first 4 images
+      await Promise.all(
+        images.slice(0, 4).map(url => preloadImage(url))
+      );
+    } catch (error) {
+      console.error('Error preloading project images:', error);
+    }
+  };
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -236,10 +294,14 @@ export const ProjectGrid = ({ projectType }) => {
           const images = getProjectImages(key)
           const firstImage = images[0]
           
-          // Find matching initial project data
-          const initialProject = initialProjects[projectType]?.find(p => 
-            p.id === key.toLowerCase().replace(/_/g, '-')
-          ) || {}
+          // Find matching initial project data by converting storage key to project ID format
+          const projectId = key.toLowerCase().replace(/_/g, '-')
+          const initialProject = initialProjects[projectType]?.find(p => p.id === projectId) || {}
+          
+          // Preload the first image
+          if (firstImage) {
+            await preloadImage(firstImage);
+          }
           
           return {
             ...initialProject,
@@ -267,8 +329,12 @@ export const ProjectGrid = ({ projectType }) => {
       <div className="flex justify-center gap-4 min-w-max px-4">
         <div className="flex gap-4 max-w-6xl">
           {projects.map((project) => (
-            <div key={project.id} className="w-[120px]">
-              <ProjectCard {...project} />
+            <div key={`project-${project.id}`} className="w-[120px]">
+              <ProjectCard 
+                {...project} 
+                key={`card-${project.id}`}
+                onMouseEnter={() => preloadProjectImages(project.id)}
+              />
             </div>
           ))}
         </div>
