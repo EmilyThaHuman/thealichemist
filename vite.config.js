@@ -21,6 +21,18 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+        assetFileNames: (assetInfo) => {
+          let extType = assetInfo.name.split('.')[1];
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
+            extType = 'img';
+          }
+          return `assets/${extType}/[name]-[hash][extname]`;
+        }
+      }
+    }
   },
   assetsInclude: /\.(jpg|JPG|jpeg|png|gif|mp4|svg|ico|webp)$/,
   optimizeDeps: {
@@ -32,6 +44,12 @@ export default defineConfig({
     fs: {
       // Allow serving files from one level up to the project root
       allow: ['..']
+    },
+    modulePreload: {
+      resolveDependencies: (filename, deps) => {
+        // Only preload direct dependencies
+        return deps.filter(dep => dep.includes('node_modules') || dep.includes('src'));
+      }
     }
   }
 });

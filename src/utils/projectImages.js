@@ -14,7 +14,9 @@ export const PROJECT_CONFIG = {
   ALI_WOOD: { path: 'ALI_WOOD', count: 10 },
   FIT_TO_BE_TIED: { path: 'FIT_TO_BE_TIED', count: 10 },
   VW_VANS: { path: 'VW_VANS', count: 10 },
-  MOCHILAS: { path: 'MOCHILAS', count: 10 }
+  MOCHILAS: { path: 'MOCHILAS', count: 10 },
+  SCHUYLERS_HOUSE: { path: 'SCHUYLERS_HOUSE', count: 10 },
+  MIKES_HOUSE: { path: 'MIKES_HOUSE', count: 10 },
 }
 
 // Cache configuration

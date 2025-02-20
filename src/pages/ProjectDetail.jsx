@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { initialProjects } from "@/components/ProjectGrid";
 import { motion, AnimatePresence } from "framer-motion";
-import initializeImages from '../utils/projectImages';
+import { useProjectImagesStore } from "@/utils/projectImages";
 
 const ProjectDetail = () => {
   const { id } = useParams();
@@ -10,6 +10,7 @@ const ProjectDetail = () => {
   const [direction, setDirection] = useState(0);
   const [imageErrors, setImageErrors] = useState({});
   const [images, setImages] = useState(null);
+  const { loadProject } = useProjectImagesStore();
   
   // Find project across all project types
   const project = Object.values(initialProjects)
@@ -18,12 +19,31 @@ const ProjectDetail = () => {
 
   useEffect(() => {
     const loadImages = async () => {
-      const imageArrays = await initializeImages();
-      setImages(imageArrays);
+      if (!project?.id) {
+        console.warn('Project ID not available');
+        return;
+      }
+      
+      // Convert project ID to the correct format for PROJECT_CONFIG
+      const projectKey = project.id.toUpperCase().replace(/-/g, '_');
+      
+      try {
+        const projectImages = await loadProject(projectKey);
+        if (projectImages?.length) {
+          setImages({ [`${project.id.toLowerCase()}Images`]: projectImages });
+        } else {
+          // Fallback to just using the main project image
+          setImages({ [`${project.id.toLowerCase()}Images`]: [project.image] });
+        }
+      } catch (error) {
+        console.error('Error loading images:', error);
+        // Fallback to just using the main project image
+        setImages({ [`${project.id.toLowerCase()}Images`]: [project.image] });
+      }
     };
     
     loadImages();
-  }, []);
+  }, [project, loadProject]); // Add loadProject as a dependency
 
   if (!project) {
     return <div>Project not found</div>;
