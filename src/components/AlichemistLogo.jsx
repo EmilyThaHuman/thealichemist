@@ -9,7 +9,7 @@ export const AlichemistLogo = ({
     <div className={className}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 400 300"
+        viewBox="0 0 300 250"
         width={width}
         height={height}
         className="w-full h-full"
@@ -18,24 +18,26 @@ export const AlichemistLogo = ({
         <style>
           {`
             @font-face {
-              font-family: 'CustomFont';
-              src: local('Arial Black'), local('Arial-Black');
+              font-family: 'LogoFont';
+              src: local('Arial Black'), local('Arial-Black'), local('Impact');
+              font-weight: 900;
             }
             text {
-              font-family: 'CustomFont', sans-serif;
+              font-family: 'LogoFont', sans-serif;
               font-weight: 900;
               fill: currentColor;
+              letter-spacing: -0.03em;
             }
           `}
         </style>
 
-        <text x="0" y="80" fontSize="120" className="text-current">
+        <text x="10" y="65" fontSize="75" className="text-current">
           THE
         </text>
-        <text x="0" y="160" fontSize="120" className="text-current">
+        <text x="10" y="140" fontSize="75" className="text-current">
           ALICH-
         </text>
-        <text x="0" y="240" fontSize="120" className="text-current">
+        <text x="10" y="215" fontSize="75" className="text-current">
           EMIST
         </text>
       </svg>
