@@ -103,20 +103,41 @@ const createNumberedImageArray = async (projectPath, count, onProgress) => {
     const BATCH_SIZE = 5 // Process 5 images at a time
     const images = []
     
-    for (let i = 0; i < count; i += BATCH_SIZE) {
-      const batchResults = await processBatch(sortedFiles, projectPath, count, i, BATCH_SIZE)
-      images.push(...batchResults.map(r => r.url))
+    // Use the actual number of files instead of the specified count
+    const actualCount = sortedFiles.length
+    
+    for (let i = 0; i < actualCount; i += BATCH_SIZE) {
+      // Process in batches using the actual files we have
+      const batchResults = await Promise.all(
+        sortedFiles.slice(i, i + BATCH_SIZE).map(async (file) => {
+          if (file && file.name) {
+            const path = `${projectPath}/${file.name}`
+            const url = await getPublicUrl(path)
+            if (url) {
+              console.log(`Successfully got URL for ${path}:`, url)
+              // Extract the actual number from the filename to maintain correct indexing
+              const fileNumber = parseInt(file.name.split('.')[0])
+              return { index: fileNumber, url }
+            }
+          }
+          return null
+        })
+      )
+      
+      // Filter out null results and add to images array
+      const validResults = batchResults.filter(Boolean)
+      images.push(...validResults.map(r => r.url))
       
       // Report progress
       if (onProgress) {
         onProgress({
           project: projectPath,
-          loaded: Math.min(i + BATCH_SIZE, count),
-          total: count
+          loaded: Math.min(i + BATCH_SIZE, actualCount),
+          total: actualCount
         })
       }
     }
-
+    
     console.log(`Successfully loaded ${images.length} images for ${projectPath}`)
     return images
   } catch (error) {
