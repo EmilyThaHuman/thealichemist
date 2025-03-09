@@ -95,6 +95,22 @@ const ProjectDetail = () => {
     preloadNextImages();
   }, [currentIndex, project, getProjectImages, preloadedImages]);
 
+  // Filter out images that have errors
+  useEffect(() => {
+    if (Object.keys(imageErrors).length > 0) {
+      // If errors occurred, we need to refresh the current pair
+      const currentPair = getCurrentPair();
+      
+      // Check if any images in the current pair have errors
+      const hasErrors = currentPair.some(img => imageErrors[img]);
+      
+      // If there are errors, move to the next set of images
+      if (hasErrors) {
+        goToNext();
+      }
+    }
+  }, [imageErrors]);
+
   if (!project) {
     return <div>Project not found</div>;
   }
@@ -115,23 +131,43 @@ const ProjectDetail = () => {
   }
 
   const getCurrentPair = () => {
-    return [
-      projectImages[currentIndex],
-      projectImages[(currentIndex + 1) % projectImages.length],
-    ].filter(Boolean);
+    // Only use the available images without placeholders
+    const firstImageIndex = currentIndex % projectImages.length;
+    const secondImageIndex = (currentIndex + 1) % projectImages.length;
+    
+    // Create the pair using the available images
+    const pair = [];
+    
+    // Only add images that exist and don't have loading errors
+    if (projectImages[firstImageIndex] && !imageErrors[projectImages[firstImageIndex]]) {
+      pair.push(projectImages[firstImageIndex]);
+    }
+    
+    // Only add the second image if it exists and we have enough images
+    if (projectImages.length > 1 && 
+        projectImages[secondImageIndex] && 
+        !imageErrors[projectImages[secondImageIndex]]) {
+      pair.push(projectImages[secondImageIndex]);
+    }
+    
+    return pair;
   };
 
   const currentPair = getCurrentPair();
 
   const goToNext = () => {
     setDirection(1);
-    setCurrentIndex(prev => (prev + 2) % projectImages.length);
+    // Skip by the actual number of images shown (could be 1 or 2)
+    const increment = currentPair.length;
+    setCurrentIndex(prev => (prev + increment) % projectImages.length);
   };
 
   const goToPrevious = () => {
     setDirection(-1);
+    // Skip by the actual number of images shown in the current pair
+    const increment = currentPair.length;
     setCurrentIndex(prev => 
-      prev <= 1 ? projectImages.length - (projectImages.length % 2 || 2) : prev - 2
+      prev < increment ? projectImages.length - increment : prev - increment
     );
   };
 
@@ -211,38 +247,36 @@ const ProjectDetail = () => {
                 }}
                 className="absolute inset-0 flex items-center justify-center"
               >
-                <div className="flex justify-center w-full h-full px-2">
-                  {currentPair.map((image, index) => (
-                    <div key={index} className="relative h-full bg-background/50 flex items-center justify-center px-1">
-                      {!imageErrors[image] ? (
+                <div className={`flex justify-center w-full h-full px-2 ${currentPair.length === 1 ? 'items-center' : ''}`}>
+                  {currentPair.length === 0 ? (
+                    <div className="flex items-center justify-center text-gray-500">
+                      No images available
+                    </div>
+                  ) : (
+                    currentPair.map((image, index) => (
+                      <div 
+                        key={index} 
+                        className={`relative h-full bg-background/50 flex items-center justify-center px-1 ${
+                          currentPair.length === 1 ? 'w-1/2 mx-auto' : ''
+                        }`}
+                      >
                         <div className="w-full h-full relative flex items-center justify-center">
                           <img
                             src={image}
                             alt={`${project.title} ${currentIndex + index + 1}`}
                             className="max-w-full max-h-full object-contain mx-auto"
                             onError={(e) => {
-                              if (e.target.src !== project.image) {
-                                console.warn(`Failed to load image: ${image}, falling back to thumbnail`);
-                                e.target.src = project.image;
-                                setImageErrors(prev => ({
-                                  ...prev,
-                                  [image]: true
-                                }));
-                              }
+                              console.warn(`Failed to load image: ${image}`);
+                              setImageErrors(prev => ({
+                                ...prev,
+                                [image]: true
+                              }));
                             }}
                           />
                         </div>
-                      ) : (
-                        <div className="w-full h-full relative flex items-center justify-center">
-                          <img
-                            src={project.image}
-                            alt={`${project.title} thumbnail`}
-                            className="max-w-full max-h-full object-contain mx-auto" 
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                      </div>
+                    ))
+                  )}
                 </div>
               </motion.div>
             </AnimatePresence>
