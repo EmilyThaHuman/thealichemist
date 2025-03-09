@@ -181,7 +181,7 @@ const ProjectDetail = () => {
 
       <div className="flex justify-center w-full overflow-hidden mb-4">
         <div className="relative w-[90%] max-w-7xl group">
-          <div className="min-h-[400px] md:min-h-[500px] lg:min-h-[600px] w-full relative bg-background">
+          <div className="h-[60vh] min-h-[400px] w-full relative bg-background">
             <AnimatePresence initial={false} custom={direction}>
               <motion.div
                 key={currentIndex}
@@ -211,31 +211,33 @@ const ProjectDetail = () => {
                 }}
                 className="absolute inset-0 flex items-center justify-center"
               >
-                <div className="grid grid-cols-2 gap-4 w-full h-full p-4">
+                <div className="flex justify-center w-full h-full px-2">
                   {currentPair.map((image, index) => (
-                    <div key={index} className="relative flex items-center justify-center h-full bg-background/50">
+                    <div key={index} className="relative h-full bg-background/50 flex items-center justify-center px-1">
                       {!imageErrors[image] ? (
-                        <img
-                          src={image}
-                          alt={`${project.title} ${currentIndex + index + 1}`}
-                          className="max-w-full max-h-full w-auto h-auto object-contain"
-                          onError={(e) => {
-                            if (e.target.src !== project.image) {
-                              console.warn(`Failed to load image: ${image}, falling back to thumbnail`);
-                              e.target.src = project.image;
-                              setImageErrors(prev => ({
-                                ...prev,
-                                [image]: true
-                              }));
-                            }
-                          }}
-                        />
+                        <div className="w-full h-full relative flex items-center justify-center">
+                          <img
+                            src={image}
+                            alt={`${project.title} ${currentIndex + index + 1}`}
+                            className="max-w-full max-h-full object-contain mx-auto"
+                            onError={(e) => {
+                              if (e.target.src !== project.image) {
+                                console.warn(`Failed to load image: ${image}, falling back to thumbnail`);
+                                e.target.src = project.image;
+                                setImageErrors(prev => ({
+                                  ...prev,
+                                  [image]: true
+                                }));
+                              }
+                            }}
+                          />
+                        </div>
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center">
+                        <div className="w-full h-full relative flex items-center justify-center">
                           <img
                             src={project.image}
                             alt={`${project.title} thumbnail`}
-                            className="max-w-full max-h-full w-auto h-auto object-contain"
+                            className="max-w-full max-h-full object-contain mx-auto" 
                           />
                         </div>
                       )}
